@@ -1,0 +1,121 @@
+name: I2C A78 Driver CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        gcc-version: [9, 10, 11, 12]
+        
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-${{ matrix.gcc-version }} python3 python3-pip gcov valgrind cppcheck
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ matrix.gcc-version }} 100
+        pip3 install coverage pytest
+        
+    - name: Check dependencies
+      run: |
+        cd tests && make install-deps
+        
+    - name: Build tests
+      run: |
+        cd tests && make all
+        
+    - name: Run comprehensive test suite
+      run: |
+        cd tests && make comprehensive
+        
+    - name: Run code coverage
+      run: |
+        cd tests && make coverage
+        
+    - name: Run static analysis
+      run: |
+        cd tests && make static-analysis
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results-gcc${{ matrix.gcc-version }}
+        path: |
+          test_results/
+          tests/*.gcov
+          
+    - name: Upload coverage to Codecov
+      if: matrix.gcc-version == 11
+      uses: codecov/codecov-action@v3
+      with:
+        files: tests/*.gcov
+        fail_ci_if_error: false
+
+  kernel-compatibility:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        kernel-headers: ['5.4', '5.15', '6.1', '6.5']
+        
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install kernel headers
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y linux-headers-generic gcc python3
+        
+    - name: Test kernel compatibility
+      run: |
+        cd src/driver
+        # Test compilation against different kernel versions would go here
+        echo "Kernel compatibility testing for ${{ matrix.kernel-headers }}"
+        
+  documentation:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check documentation
+      run: |
+        # Check that all public functions are documented
+        find src/ -name "*.c" -o -name "*.h" | xargs grep -l "static inline\|extern\|EXPORT_SYMBOL" | \
+        xargs grep -L "/**" && echo "Missing documentation found" && exit 1 || echo "Documentation check passed"
+        
+    - name: Validate device tree bindings
+      run: |
+        if [ -f docs/devicetree/bindings/i2c/arm,cortex-a78-i2c.yaml ]; then
+          echo "Device tree bindings found"
+        else
+          echo "Warning: Device tree bindings documentation missing"
+        fi
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Security scan
+      run: |
+        # Check for common security issues in kernel code
+        find src/ -name "*.c" -exec grep -l "strcpy\|strcat\|sprintf\|gets" {} \; && \
+        echo "Potential security issues found" && exit 1 || echo "Security check passed"
+        
+    - name: Check for secrets
+      run: |
+        # Make sure no secrets are committed
+        if git log --all --full-history -- | grep -i -E "(password|secret|key|token)" | head -1; then
+          echo "Potential secrets found in git history"
+          exit 1
+        fi

@@ -3,15 +3,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "../mocks/mock-linux-kernel.h"
-
-#define linux linux_disabled
-#include "../../src/include/i2c-a78.h"
-#undef linux
-
-extern void mock_set_pm_suspended(bool suspended);
-extern void mock_set_completion_done(bool done);
-extern void mock_reset_registers(void);
+#include "../test_common.h"
 
 struct test_case {
 	const char *name;

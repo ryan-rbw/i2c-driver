@@ -25,6 +25,7 @@ typedef uint32_t dma_addr_t;
 typedef int32_t dma_cookie_t;
 typedef unsigned long ulong;
 
+#define __iomem
 #define readl_relaxed(addr) mock_readl(addr)
 #define writel_relaxed(val, addr) mock_writel(val, addr)
 
@@ -45,10 +46,12 @@ typedef unsigned long ulong;
 #define ENOMEM 12
 #define EIO 5
 
-#define DMA_MEM_TO_DEV 1
-#define DMA_DEV_TO_MEM 2
-#define DMA_PREP_INTERRUPT (1 << 0)
+enum dma_transfer_direction {
+	DMA_MEM_TO_DEV = 1,
+	DMA_DEV_TO_MEM = 2,
+};
 
+#define DMA_PREP_INTERRUPT (1 << 0)
 #define DMA_SLAVE_BUSWIDTH_1_BYTE 1
 
 struct device {
@@ -71,10 +74,10 @@ struct resource {
 
 #define IORESOURCE_MEM 0x00000200
 
-struct clk;
-struct completion;
-struct mutex;
-struct spinlock;
+struct clk { int dummy; };
+struct completion { int dummy; };
+struct mutex { int dummy; };
+typedef struct spinlock { int dummy; } spinlock_t;
 
 struct i2c_msg {
 	u16 addr;
@@ -98,9 +101,8 @@ struct i2c_algorithm {
 	u32 (*functionality)(struct i2c_adapter *);
 };
 
-struct dma_chan;
-struct dma_async_tx_descriptor;
-struct dma_slave_config;
+struct dma_chan { int dummy; };
+struct dma_slave_config { int dummy; };
 
 typedef void (*dma_async_tx_callback)(void *dma_async_param);
 
