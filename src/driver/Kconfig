@@ -1,0 +1,72 @@
+config I2C_A78_PLATFORM
+	tristate "ARM Cortex-A78 I2C Platform Driver"
+	depends on ARM64 && OF
+	select I2C_ALGOBIT
+	help
+	  This driver supports the I2C controller found on ARM Cortex-A78
+	  based embedded Linux platforms. The driver provides I2C v2.1 and
+	  SMBus v2.0 compatibility with support for standard (100kHz), fast
+	  (400kHz), fast-plus (1MHz), and high-speed (3.4MHz) modes.
+
+	  Features include:
+	  - DMA support for large transfers (>32 bytes)
+	  - Runtime power management with autosuspend
+	  - Comprehensive error handling and recovery
+	  - Debug interface via debugfs
+	  - 7-bit and 10-bit addressing support
+
+	  Say Y here if you want I2C support on ARM Cortex-A78 platforms.
+	  This driver can also be built as a module. If so, the module
+	  will be called i2c-a78-platform.
+
+config I2C_A78_DMA
+	bool "DMA support for ARM Cortex-A78 I2C"
+	depends on I2C_A78_PLATFORM && DMADEVICES
+	default y
+	help
+	  Enable DMA support for the ARM Cortex-A78 I2C driver. This allows
+	  for more efficient transfers of large data blocks (32 bytes or more)
+	  by offloading the data movement to a DMA engine.
+
+	  DMA transfers provide better CPU utilization and can improve overall
+	  system performance, especially for applications that frequently
+	  transfer large amounts of data over I2C.
+
+	  Say Y here to enable DMA support. Note that DMA channels must be
+	  properly configured in the device tree for this feature to work.
+
+config I2C_A78_DEBUG
+	bool "Debug support for ARM Cortex-A78 I2C"
+	depends on I2C_A78_PLATFORM && DEBUG_FS
+	default n
+	help
+	  Enable debugging support for the ARM Cortex-A78 I2C driver. This
+	  creates a debugfs interface that allows inspection of:
+	  
+	  - Current driver state and configuration
+	  - Transfer statistics (bytes transferred, error counts)
+	  - Hardware register values
+	  - DMA buffer status
+
+	  The debug information is accessible through:
+	  /sys/kernel/debug/<device-name>/status
+
+	  Say Y here only if you are debugging I2C issues or developing
+	  the driver, as it adds some overhead.
+
+config I2C_A78_PM_RUNTIME
+	bool "Runtime power management for ARM Cortex-A78 I2C"
+	depends on I2C_A78_PLATFORM && PM
+	default y
+	help
+	  Enable runtime power management support for the ARM Cortex-A78 I2C
+	  driver. This allows the I2C controller to be automatically suspended
+	  when idle, reducing power consumption.
+
+	  The driver will automatically suspend after 100ms of inactivity and
+	  resume when a new I2C transfer is initiated. Clock gating and context
+	  save/restore are handled transparently.
+
+	  Say Y here to enable power management features. This is recommended
+	  for battery-powered devices and systems where power efficiency is
+	  important.

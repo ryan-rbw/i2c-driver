@@ -1,0 +1,173 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/i2c/arm,a78-i2c.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: ARM Cortex-A78 I2C Controller
+
+maintainers:
+  - I2C Driver Development Team <i2c-driver@example.com>
+
+description: |
+  I2C controller for ARM Cortex-A78 based embedded Linux platforms.
+  Supports I2C v2.1 and SMBus v2.0 specifications with multiple speed modes,
+  DMA transfers, and comprehensive power management.
+
+allOf:
+  - $ref: /schemas/i2c/i2c-controller.yaml#
+
+properties:
+  compatible:
+    const: arm,a78-i2c
+
+  reg:
+    maxItems: 1
+    description: Physical base address and size of the I2C controller registers
+
+  interrupts:
+    maxItems: 1
+    description: I2C controller interrupt
+
+  clocks:
+    maxItems: 1
+    description: Reference to the I2C controller clock
+
+  clock-names:
+    items:
+      - const: i2c
+
+  dmas:
+    items:
+      - description: TX DMA channel
+      - description: RX DMA channel
+
+  dma-names:
+    items:
+      - const: tx
+      - const: rx
+
+  clock-frequency:
+    description: |
+      Desired I2C bus frequency in Hz. Supported frequencies are:
+      - 100000 (100 kHz, Standard mode)
+      - 400000 (400 kHz, Fast mode) 
+      - 1000000 (1 MHz, Fast-mode Plus)
+      - 3400000 (3.4 MHz, High-speed mode)
+    enum: [100000, 400000, 1000000, 3400000]
+    default: 400000
+
+  timeout-ms:
+    description: Transfer timeout in milliseconds
+    $ref: /schemas/types.yaml#/definitions/uint32
+    minimum: 100
+    maximum: 10000
+    default: 1000
+
+  arm,dma-threshold:
+    description: |
+      Minimum transfer size in bytes to use DMA instead of PIO.
+      Transfers smaller than this threshold will use programmed I/O.
+    $ref: /schemas/types.yaml#/definitions/uint32
+    minimum: 16
+    maximum: 256
+    default: 32
+
+  arm,fifo-size:
+    description: Hardware FIFO depth in bytes
+    $ref: /schemas/types.yaml#/definitions/uint32
+    enum: [8, 16, 32, 64]
+    default: 16
+
+required:
+  - compatible
+  - reg
+  - interrupts
+  - clocks
+  - clock-names
+
+additionalProperties: false
+
+examples:
+  - |
+    #include <dt-bindings/interrupt-controller/arm-gic.h>
+    #include <dt-bindings/clock/platform-clocks.h>
+    
+    i2c0: i2c@12345000 {
+        compatible = "arm,a78-i2c";
+        reg = <0x12345000 0x1000>;
+        interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+        clocks = <&clock_controller PLATFORM_I2C0_CLK>;
+        clock-names = "i2c";
+        dmas = <&dma_controller 10>, <&dma_controller 11>;
+        dma-names = "tx", "rx";
+        
+        clock-frequency = <400000>;
+        timeout-ms = <1000>;
+        arm,dma-threshold = <32>;
+        arm,fifo-size = <16>;
+        
+        #address-cells = <1>;
+        #size-cells = <0>;
+        status = "okay";
+        
+        /* Example I2C devices */
+        eeprom@50 {
+            compatible = "atmel,24c02";
+            reg = <0x50>;
+            pagesize = <16>;
+        };
+        
+        sensor@48 {
+            compatible = "ti,tmp75";
+            reg = <0x48>;
+            #thermal-sensor-cells = <0>;
+        };
+    };
+
+  - |
+    /* High-speed configuration example */
+    i2c1: i2c@12346000 {
+        compatible = "arm,a78-i2c";
+        reg = <0x12346000 0x1000>;
+        interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
+        clocks = <&clock_controller PLATFORM_I2C1_CLK>;
+        clock-names = "i2c";
+        
+        clock-frequency = <3400000>;
+        timeout-ms = <500>;
+        
+        #address-cells = <1>;
+        #size-cells = <0>;
+        status = "okay";
+        
+        /* High-speed capable device */
+        accelerometer@1c {
+            compatible = "st,lis3dh-accel";
+            reg = <0x1c>;
+        };
+    };
+
+  - |
+    /* PIO-only configuration (no DMA) */
+    i2c2: i2c@12347000 {
+        compatible = "arm,a78-i2c";
+        reg = <0x12347000 0x1000>;
+        interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
+        clocks = <&clock_controller PLATFORM_I2C2_CLK>;
+        clock-names = "i2c";
+        
+        clock-frequency = <100000>;
+        timeout-ms = <2000>;
+        
+        #address-cells = <1>;
+        #size-cells = <0>;
+        status = "okay";
+        
+        /* Low-speed devices */
+        rtc@68 {
+            compatible = "dallas,ds1307";
+            reg = <0x68>;
+        };
+    };
+...
