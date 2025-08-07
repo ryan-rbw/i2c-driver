@@ -19,7 +19,7 @@
 <body>
     <div class="header">
         <h1>I2C A78 Driver - Test Results Report</h1>
-        <p>Generated: 2025-08-07T12:35:34.916232</p>
+        <p>Generated: 2025-08-07T12:49:07.478704</p>
         <p>Platform: Linux x86_64</p>
     </div>
     
@@ -31,8 +31,8 @@
             <tr><td>Passed Tests</td><td style="color: green;">23</td></tr>
             <tr><td>Failed Tests</td><td style="color: red;">0</td></tr>
             <tr><td>Success Rate</td><td>100.0%</td></tr>
-            <tr><td>Code Coverage</td><td>0.0%</td></tr>
-            <tr><td>Execution Time</td><td>2.76s</td></tr>
+            <tr><td>Code Coverage</td><td>57.4%</td></tr>
+            <tr><td>Execution Time</td><td>2.92s</td></tr>
         </table>
     </div>
     
@@ -48,12 +48,12 @@
 
 Running test: Device Creation
 Testing device creation...
-[MOCK] Allocated 352 bytes at 0x5665dd0582b0
+[MOCK] Allocated 352 bytes at 0x5f57bb8b22b0
 ✓ Device creation test passed
 
 Running test: Register Access
 Testing register access...
-[MOCK] Allocated 352 bytes at 0x5665dd058420
+[MOCK] Allocated 352 bytes at 0x5f57bb8b2420
 [MOCK] Writing register 0x00: 0x12345678
 [MOCK] Reading register 0x00: 0x12345678
 [MOCK] Writing register 0x04: 0xabcdef00
@@ -62,7 +62,7 @@ Testing register access...
 
 Running test: Speed Configuration
 Testing speed configuration...
-[MOCK] Allocated 352 bytes at 0x5665dd058590
+[MOCK] Allocated 352 bytes at 0x5f57bb8b2590
 ✓ Speed configuration test passed
 
 Running test: Bit Definitions
@@ -71,12 +71,12 @@ Testing bit definitions...
 
 Running test: DMA Structure
 Testing DMA structure...
-[MOCK] Allocated 352 bytes at 0x5665dd058700
+[MOCK] Allocated 352 bytes at 0x5f57bb8b2700
 ✓ DMA structure test passed
 
 Running test: Statistics Structure
 Testing statistics structure...
-[MOCK] Allocated 352 bytes at 0x5665dd058870
+[MOCK] Allocated 352 bytes at 0x5f57bb8b2870
 ✓ Statistics structure test passed
 
 Running test: Address Handling
@@ -100,8 +100,8 @@ All tests PASSED! ✓
 
 Running test: DMA Initialization
 Testing DMA initialization...
-[MOCK] Allocated 80 bytes at 0x59ffbe0812b0
-[MOCK] Allocated 352 bytes at 0x59ffbe081310
+[MOCK] Allocated 80 bytes at 0x5dbf757b12b0
+[MOCK] Allocated 352 bytes at 0x5dbf757b1310
 [MOCK] i2c_a78_dma_init called
 [MOCK] Initializing completion
 [MOCK] Initializing completion
@@ -117,8 +117,8 @@ Testing I2C message structure...
 
 Running test: DMA Threshold
 Testing DMA threshold logic...
-[MOCK] Allocated 80 bytes at 0x59ffbe081480
-[MOCK] Allocated 352 bytes at 0x59ffbe0814e0
+[MOCK] Allocated 80 bytes at 0x5dbf757b1480
+[MOCK] Allocated 352 bytes at 0x5dbf757b14e0
 ✓ DMA threshold test passed
 
 Running test: Address Modes
@@ -131,20 +131,20 @@ Testing transfer directions...
 
 Running test: Error Conditions
 Testing error conditions...
-[MOCK] Allocated 80 bytes at 0x59ffbe081650
-[MOCK] Allocated 352 bytes at 0x59ffbe0816b0
+[MOCK] Allocated 80 bytes at 0x5dbf757b1650
+[MOCK] Allocated 352 bytes at 0x5dbf757b16b0
 ✓ Error conditions test passed
 
 Running test: Power Management Integration
 Testing power management integration...
-[MOCK] Allocated 80 bytes at 0x59ffbe081820
-[MOCK] Allocated 352 bytes at 0x59ffbe081880
+[MOCK] Allocated 80 bytes at 0x5dbf757b1820
+[MOCK] Allocated 352 bytes at 0x5dbf757b1880
 ✓ Power management integration test passed
 
 Running test: Register Context Save/Restore
 Testing register context save/restore...
-[MOCK] Allocated 80 bytes at 0x59ffbe0819f0
-[MOCK] Allocated 352 bytes at 0x59ffbe081a50
+[MOCK] Allocated 80 bytes at 0x5dbf757b19f0
+[MOCK] Allocated 352 bytes at 0x5dbf757b1a50
 [MOCK] Writing register 0x00: 0x12345678
 [MOCK] Writing register 0x1c: 0xabcdef00
 [MOCK] Reading register 0x00: 0x12345678
@@ -165,7 +165,7 @@ All tests PASSED! ✓
             <h3>Failure Scenario Tests</h3>
             <p><strong>Status:</strong> FAILED</p>
             <p><strong>Tests:</strong> 0/0 passed</p>
-            <p><strong>Execution Time:</strong> 0.24s</p>
+            <p><strong>Execution Time:</strong> 0.22s</p>
             <div class="output" style="background-color: #f8d7da;">Errors:\nSegmentation fault (core dumped)
 </div></div>
         <div class="suite pass">
@@ -177,18 +177,18 @@ All tests PASSED! ✓
 
 Running stress test: Rapid Transfers
 Testing rapid consecutive transfers...
-[MOCK] Allocated 80 bytes at 0x5a43bc2e12b0
-[MOCK] Allocated 352 bytes at 0x5a43bc2e1310
+[MOCK] Allocated 80 bytes at 0x5b12291db2b0
+[MOCK] Allocated 352 bytes at 0x5b12291db310
 Completed 1000 transfers in 0.000 seconds
-Transfer rate: 100000000.0 transfers/second
+Transfer rate: 142857142.9 transfers/second
 Total bytes transferred: 8016 TX, 7984 RX
 ✓ Rapid transfers stress test passed
 Test completed in 0.000 seconds
 
 Running stress test: Variable Message Sizes
 Testing variable message sizes...
-[MOCK] Allocated 80 bytes at 0x5a43bc2e1480
-[MOCK] Allocated 352 bytes at 0x5a43bc2e14e0
+[MOCK] Allocated 80 bytes at 0x5b12291db480
+[MOCK] Allocated 352 bytes at 0x5b12291db4e0
 Transfer size 1: PIO
 Transfer size 2: PIO
 Transfer size 3: PIO
@@ -452,8 +452,8 @@ Test completed in 0.000 seconds
 
 Running stress test: Address Space Coverage
 Testing address space coverage...
-[MOCK] Allocated 80 bytes at 0x5a43bc2e1760
-[MOCK] Allocated 352 bytes at 0x5a43bc2e17c0
+[MOCK] Allocated 80 bytes at 0x5b12291db760
+[MOCK] Allocated 352 bytes at 0x5b12291db7c0
 Testing 7-bit addresses (0x01-0x7F)...
 Testing 10-bit addresses (sample)...
 ✓ Address space coverage stress test passed
@@ -461,8 +461,8 @@ Test completed in 0.000 seconds
 
 Running stress test: Register Access Patterns
 Testing intensive register access patterns...
-[MOCK] Allocated 80 bytes at 0x5a43bc2e1930
-[MOCK] Allocated 352 bytes at 0x5a43bc2e1990
+[MOCK] Allocated 80 bytes at 0x5b12291db930
+[MOCK] Allocated 352 bytes at 0x5b12291db990
 [MOCK] Writing register 0x00: 0x00000000
 [MOCK] Reading register 0x00: 0x00000000
 [MOCK] Writing register 0x00: 0xffffffff
@@ -13265,12 +13265,12 @@ Testing intensive register access patterns...
 [MOCK] Reading register 0x1c: 0xcafebabe
 Completed intensive register access test
 ✓ Register access patterns stress test passed
-Test completed in 0.006 seconds
+Test completed in 0.005 seconds
 
 Running stress test: Power Management Cycles
 Testing power management cycles...
-[MOCK] Allocated 80 bytes at 0x5a43bc2e1b00
-[MOCK] Allocated 352 bytes at 0x5a43bc2e1b60
+[MOCK] Allocated 80 bytes at 0x5b12291dbb00
+[MOCK] Allocated 352 bytes at 0x5b12291dbb60
 [MOCK] Reading register 0x00: 0xcafebabe
 [MOCK] Reading register 0x1c: 0xcafebabe
 [MOCK] Writing register 0x1c: 0xcafebabe
@@ -13686,8 +13686,8 @@ Test completed in 0.000 seconds
 
 Running stress test: Error Recovery Cycles
 Testing error recovery cycles...
-[MOCK] Allocated 80 bytes at 0x5a43bc2e1cd0
-[MOCK] Allocated 352 bytes at 0x5a43bc2e1d30
+[MOCK] Allocated 80 bytes at 0x5b12291dbcd0
+[MOCK] Allocated 352 bytes at 0x5b12291dbd30
 [MOCK] Writing register 0x18: 0x000000ff
 [MOCK] Writing register 0x18: 0x000000ff
 [MOCK] Writing register 0x18: 0x000000ff
@@ -13747,8 +13747,8 @@ Test completed in 0.000 seconds
 
 Running stress test: FIFO Boundary Conditions
 Testing FIFO boundary conditions...
-[MOCK] Allocated 80 bytes at 0x5a43bc2e1ea0
-[MOCK] Allocated 352 bytes at 0x5a43bc2e1f00
+[MOCK] Allocated 80 bytes at 0x5b12291dbea0
+[MOCK] Allocated 352 bytes at 0x5b12291dbf00
 [MOCK] Writing register 0x14: 0x00001010
 [MOCK] Writing register 0x14: 0x00000000
 [MOCK] Writing register 0x00: 0x000000c0
@@ -14054,7 +14054,7 @@ Test completed in 0.000 seconds
 
 === Stress Test Summary ===
 Passed: 7/7
-Total execution time: 0.006 seconds
+Total execution time: 0.005 seconds
 System stability: STABLE
 All stress tests PASSED! System is stable under load ✓
 </div></div>

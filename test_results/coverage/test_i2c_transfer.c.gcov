@@ -1,0 +1,311 @@
+        -:    0:Source:integration/test_i2c_transfer.c
+        -:    1:#include <stdio.h>
+        -:    2:#include <stdlib.h>
+        -:    3:#include <string.h>
+        -:    4:#include <assert.h>
+        -:    5:
+        -:    6:#include "../test_common.h"
+        -:    7:
+        -:    8:extern int i2c_a78_dma_init(struct i2c_a78_dev *i2c_dev);
+        -:    9:extern void i2c_a78_dma_release(struct i2c_a78_dev *i2c_dev);
+        -:   10:extern int i2c_a78_dma_xfer(struct i2c_a78_dev *i2c_dev, struct i2c_msg *msg);
+        -:   11:
+        5:   12:static struct i2c_a78_dev *create_test_device(void)
+        -:   13:{
+        -:   14:	struct device *mock_dev;
+        -:   15:	struct i2c_a78_dev *i2c_dev;
+        -:   16:	
+        5:   17:	mock_dev = devm_kzalloc(NULL, sizeof(*mock_dev), GFP_KERNEL);
+        5:   18:	strcpy(mock_dev->name, "test-i2c");
+        -:   19:	
+        5:   20:	i2c_dev = devm_kzalloc(mock_dev, sizeof(*i2c_dev), GFP_KERNEL);
+        5:   21:	i2c_dev->dev = mock_dev;
+        5:   22:	i2c_dev->base = (void *)0x1000;
+        5:   23:	i2c_dev->bus_freq = I2C_A78_SPEED_FAST;
+        5:   24:	i2c_dev->timeout_ms = I2C_A78_TIMEOUT_MS;
+        5:   25:	i2c_dev->state = I2C_A78_STATE_IDLE;
+        -:   26:	
+        5:   27:	return i2c_dev;
+        -:   28:}
+        -:   29:
+        1:   30:static int test_dma_initialization(void)
+        -:   31:{
+        -:   32:	struct i2c_a78_dev *i2c_dev;
+        -:   33:	int ret;
+        -:   34:	
+        1:   35:	printf("Testing DMA initialization...\n");
+        -:   36:	
+        1:   37:	i2c_dev = create_test_device();
+       1*:   38:	assert(i2c_dev != NULL);
+        -:   39:	
+        1:   40:	ret = i2c_a78_dma_init(i2c_dev);
+        1:   41:	printf("DMA init returned: %d\n", ret);
+        -:   42:	
+        1:   43:	if (ret == 0) {
+       1*:   44:		assert(i2c_dev->dma.use_dma == true);
+        1:   45:		printf("DMA successfully initialized\n");
+        -:   46:		
+        1:   47:		i2c_a78_dma_release(i2c_dev);
+        1:   48:		printf("DMA successfully released\n");
+        -:   49:	} else {
+    #####:   50:		printf("DMA initialization failed (expected in mock environment)\n");
+        -:   51:	}
+        -:   52:	
+        1:   53:	printf("✓ DMA initialization test passed\n");
+        1:   54:	return 0;
+        -:   55:}
+        -:   56:
+        1:   57:static int test_message_structure(void)
+        -:   58:{
+        -:   59:	struct i2c_msg msgs[2];
+        1:   60:	u8 tx_data[4] = {0x10, 0x20, 0x30, 0x40};
+        1:   61:	u8 rx_data[4] = {0};
+        -:   62:	
+        1:   63:	printf("Testing I2C message structure...\n");
+        -:   64:	
+        -:   65:	// Write message
+        1:   66:	msgs[0].addr = 0x50;
+        1:   67:	msgs[0].flags = 0;
+        1:   68:	msgs[0].len = 4;
+        1:   69:	msgs[0].buf = tx_data;
+        -:   70:	
+        -:   71:	// Read message  
+        1:   72:	msgs[1].addr = 0x50;
+        1:   73:	msgs[1].flags = I2C_M_RD;
+        1:   74:	msgs[1].len = 4;
+        1:   75:	msgs[1].buf = rx_data;
+        -:   76:	
+       1*:   77:	assert(msgs[0].addr == 0x50);
+       1*:   78:	assert(msgs[0].flags == 0);
+       1*:   79:	assert(msgs[0].len == 4);
+       1*:   80:	assert(msgs[0].buf == tx_data);
+        -:   81:	
+       1*:   82:	assert(msgs[1].addr == 0x50);
+       1*:   83:	assert(msgs[1].flags == I2C_M_RD);
+       1*:   84:	assert(msgs[1].len == 4);
+       1*:   85:	assert(msgs[1].buf == rx_data);
+        -:   86:	
+        1:   87:	printf("✓ Message structure test passed\n");
+        1:   88:	return 0;
+        -:   89:}
+        -:   90:
+        1:   91:static int test_dma_threshold(void)
+        -:   92:{
+        -:   93:	struct i2c_a78_dev *i2c_dev;
+        -:   94:	struct i2c_msg msg;
+        -:   95:	u8 small_data[16];
+        -:   96:	u8 large_data[64];
+        -:   97:	
+        1:   98:	printf("Testing DMA threshold logic...\n");
+        -:   99:	
+        1:  100:	i2c_dev = create_test_device();
+        1:  101:	i2c_dev->dma.use_dma = true;
+        -:  102:	
+        -:  103:	// Small transfer (should use PIO)
+        1:  104:	msg.addr = 0x50;
+        1:  105:	msg.flags = 0;
+        1:  106:	msg.len = 16;
+        1:  107:	msg.buf = small_data;
+        -:  108:	
+       1*:  109:	assert(msg.len < I2C_A78_DMA_THRESHOLD);
+        -:  110:	
+        -:  111:	// Large transfer (should use DMA)
+        1:  112:	msg.len = 64;
+        1:  113:	msg.buf = large_data;
+        -:  114:	
+       1*:  115:	assert(msg.len >= I2C_A78_DMA_THRESHOLD);
+        -:  116:	assert(I2C_A78_DMA_THRESHOLD == 32);
+        -:  117:	
+        1:  118:	printf("✓ DMA threshold test passed\n");
+        1:  119:	return 0;
+        -:  120:}
+        -:  121:
+        1:  122:static int test_address_modes(void)
+        -:  123:{
+        -:  124:	struct i2c_msg msg_7bit, msg_10bit;
+        -:  125:	
+        1:  126:	printf("Testing address modes...\n");
+        -:  127:	
+        -:  128:	// 7-bit address
+        1:  129:	msg_7bit.addr = 0x48;
+        1:  130:	msg_7bit.flags = 0;
+        1:  131:	msg_7bit.len = 1;
+        1:  132:	msg_7bit.buf = NULL;
+        -:  133:	
+       1*:  134:	assert(!(msg_7bit.flags & I2C_M_TEN));
+       1*:  135:	assert(msg_7bit.addr <= 0x7F);
+        -:  136:	
+        -:  137:	// 10-bit address
+        1:  138:	msg_10bit.addr = 0x123;
+        1:  139:	msg_10bit.flags = I2C_M_TEN;
+        1:  140:	msg_10bit.len = 1;
+        1:  141:	msg_10bit.buf = NULL;
+        -:  142:	
+       1*:  143:	assert(msg_10bit.flags & I2C_M_TEN);
+       1*:  144:	assert(msg_10bit.addr <= 0x3FF);
+        -:  145:	
+        1:  146:	printf("✓ Address modes test passed\n");
+        1:  147:	return 0;
+        -:  148:}
+        -:  149:
+        1:  150:static int test_transfer_directions(void)
+        -:  151:{
+        -:  152:	struct i2c_msg write_msg, read_msg;
+        -:  153:	u8 data[4];
+        -:  154:	
+        1:  155:	printf("Testing transfer directions...\n");
+        -:  156:	
+        -:  157:	// Write transfer
+        1:  158:	write_msg.addr = 0x50;
+        1:  159:	write_msg.flags = 0;
+        1:  160:	write_msg.len = 4;
+        1:  161:	write_msg.buf = data;
+        -:  162:	
+       1*:  163:	assert(!(write_msg.flags & I2C_M_RD));
+        -:  164:	
+        -:  165:	// Read transfer
+        1:  166:	read_msg.addr = 0x50;
+        1:  167:	read_msg.flags = I2C_M_RD;
+        1:  168:	read_msg.len = 4;
+        1:  169:	read_msg.buf = data;
+        -:  170:	
+       1*:  171:	assert(read_msg.flags & I2C_M_RD);
+        -:  172:	
+        1:  173:	printf("✓ Transfer directions test passed\n");
+        1:  174:	return 0;
+        -:  175:}
+        -:  176:
+        1:  177:static int test_error_conditions(void)
+        -:  178:{
+        -:  179:	struct i2c_a78_dev *i2c_dev;
+        -:  180:	
+        1:  181:	printf("Testing error conditions...\n");
+        -:  182:	
+        1:  183:	i2c_dev = create_test_device();
+        -:  184:	
+        -:  185:	// Test initial error counters
+       1*:  186:	assert(i2c_dev->stats.timeouts == 0);
+       1*:  187:	assert(i2c_dev->stats.arb_lost == 0);
+       1*:  188:	assert(i2c_dev->stats.nacks == 0);
+        -:  189:	
+        -:  190:	// Simulate errors
+        1:  191:	i2c_dev->stats.timeouts++;
+        1:  192:	i2c_dev->stats.arb_lost++;
+        1:  193:	i2c_dev->stats.nacks++;
+        -:  194:	
+       1*:  195:	assert(i2c_dev->stats.timeouts == 1);
+       1*:  196:	assert(i2c_dev->stats.arb_lost == 1);
+       1*:  197:	assert(i2c_dev->stats.nacks == 1);
+        -:  198:	
+        1:  199:	printf("✓ Error conditions test passed\n");
+        1:  200:	return 0;
+        -:  201:}
+        -:  202:
+        1:  203:static int test_power_management_integration(void)
+        -:  204:{
+        -:  205:	struct i2c_a78_dev *i2c_dev;
+        -:  206:	
+        1:  207:	printf("Testing power management integration...\n");
+        -:  208:	
+        1:  209:	i2c_dev = create_test_device();
+        -:  210:	
+        -:  211:	// Test initial state
+       1*:  212:	assert(i2c_dev->suspended == false);
+        -:  213:	
+        -:  214:	// Test suspend state
+        1:  215:	i2c_dev->suspended = true;
+       1*:  216:	assert(i2c_dev->suspended == true);
+        -:  217:	
+        -:  218:	// Test resume state
+        1:  219:	i2c_dev->suspended = false;
+       1*:  220:	assert(i2c_dev->suspended == false);
+        -:  221:	
+        1:  222:	printf("✓ Power management integration test passed\n");
+        1:  223:	return 0;
+        -:  224:}
+        -:  225:
+        1:  226:static int test_register_context_save_restore(void)
+        -:  227:{
+        -:  228:	struct i2c_a78_dev *i2c_dev;
+        1:  229:	u32 control_val = 0x12345678;
+        1:  230:	u32 prescaler_val = 0xABCDEF00;
+        -:  231:	
+        1:  232:	printf("Testing register context save/restore...\n");
+        -:  233:	
+        1:  234:	i2c_dev = create_test_device();
+        1:  235:	mock_reset_registers();
+        -:  236:	
+        -:  237:	// Simulate saving context
+        1:  238:	i2c_a78_writel(i2c_dev, control_val, I2C_A78_CONTROL);
+        1:  239:	i2c_a78_writel(i2c_dev, prescaler_val, I2C_A78_PRESCALER);
+        -:  240:	
+        1:  241:	i2c_dev->saved_control = i2c_a78_readl(i2c_dev, I2C_A78_CONTROL);
+        1:  242:	i2c_dev->saved_prescaler = i2c_a78_readl(i2c_dev, I2C_A78_PRESCALER);
+        -:  243:	
+        -:  244:	// Simulate power loss (clear registers)
+        1:  245:	mock_reset_registers();
+        -:  246:	
+        -:  247:	// Verify registers are cleared
+       1*:  248:	assert(i2c_a78_readl(i2c_dev, I2C_A78_CONTROL) == 0);
+       1*:  249:	assert(i2c_a78_readl(i2c_dev, I2C_A78_PRESCALER) == 0);
+        -:  250:	
+        -:  251:	// Simulate restoring context
+        1:  252:	i2c_a78_writel(i2c_dev, i2c_dev->saved_control, I2C_A78_CONTROL);
+        1:  253:	i2c_a78_writel(i2c_dev, i2c_dev->saved_prescaler, I2C_A78_PRESCALER);
+        -:  254:	
+        -:  255:	// Verify restoration
+       1*:  256:	assert(i2c_a78_readl(i2c_dev, I2C_A78_CONTROL) == control_val);
+       1*:  257:	assert(i2c_a78_readl(i2c_dev, I2C_A78_PRESCALER) == prescaler_val);
+        -:  258:	
+        1:  259:	printf("✓ Register context save/restore test passed\n");
+        1:  260:	return 0;
+        -:  261:}
+        -:  262:
+        -:  263:struct test_case {
+        -:  264:	const char *name;
+        -:  265:	int (*test_func)(void);
+        -:  266:};
+        -:  267:
+        -:  268:static struct test_case test_cases[] = {
+        -:  269:	{"DMA Initialization", test_dma_initialization},
+        -:  270:	{"Message Structure", test_message_structure},
+        -:  271:	{"DMA Threshold", test_dma_threshold},
+        -:  272:	{"Address Modes", test_address_modes},
+        -:  273:	{"Transfer Directions", test_transfer_directions},
+        -:  274:	{"Error Conditions", test_error_conditions},
+        -:  275:	{"Power Management Integration", test_power_management_integration},
+        -:  276:	{"Register Context Save/Restore", test_register_context_save_restore},
+        -:  277:	{NULL, NULL}
+        -:  278:};
+        -:  279:
+        1:  280:int main(void)
+        -:  281:{
+        1:  282:	int passed = 0;
+        1:  283:	int total = 0;
+        -:  284:	
+        1:  285:	printf("=== I2C A78 Integration Tests ===\n\n");
+        -:  286:	
+        9:  287:	for (struct test_case *tc = test_cases; tc->name != NULL; tc++) {
+        8:  288:		printf("Running test: %s\n", tc->name);
+        -:  289:		
+        8:  290:		if (tc->test_func() == 0) {
+        8:  291:			passed++;
+        -:  292:		} else {
+    #####:  293:			printf("✗ Test '%s' FAILED\n", tc->name);
+        -:  294:		}
+        -:  295:		
+        8:  296:		total++;
+        8:  297:		printf("\n");
+        -:  298:	}
+        -:  299:	
+        1:  300:	printf("=== Test Summary ===\n");
+        1:  301:	printf("Passed: %d/%d\n", passed, total);
+        -:  302:	
+        1:  303:	if (passed == total) {
+        1:  304:		printf("All tests PASSED! ✓\n");
+        1:  305:		return 0;
+        -:  306:	} else {
+    #####:  307:		printf("Some tests FAILED! ✗\n");
+    #####:  308:		return 1;
+        -:  309:	}
+        -:  310:}

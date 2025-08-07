@@ -1,0 +1,173 @@
+        -:    0:Source:test_i2c_driver.h
+        -:    1:#ifndef __TEST_I2C_DRIVER_H__
+        -:    2:#define __TEST_I2C_DRIVER_H__
+        -:    3:
+        -:    4:#include "mocks/mock-linux-kernel.h"
+        -:    5:
+        -:    6:#define I2C_A78_DRIVER_NAME	"i2c-a78-platform"
+        -:    7:
+        -:    8:#define I2C_A78_CONTROL		0x00
+        -:    9:#define I2C_A78_STATUS		0x04
+        -:   10:#define I2C_A78_DATA		0x08
+        -:   11:#define I2C_A78_ADDRESS		0x0C
+        -:   12:#define I2C_A78_COMMAND		0x10
+        -:   13:#define I2C_A78_FIFO_STATUS	0x14
+        -:   14:#define I2C_A78_INTERRUPT	0x18
+        -:   15:#define I2C_A78_PRESCALER	0x1C
+        -:   16:
+        -:   17:#define I2C_A78_CONTROL_MASTER_EN	BIT(0)
+        -:   18:#define I2C_A78_CONTROL_SPEED_STD	(0 << 1)
+        -:   19:#define I2C_A78_CONTROL_SPEED_FAST	(1 << 1)
+        -:   20:#define I2C_A78_CONTROL_SPEED_FAST_PLUS	(2 << 1)
+        -:   21:#define I2C_A78_CONTROL_SPEED_HIGH	(3 << 1)
+        -:   22:#define I2C_A78_CONTROL_SPEED_MASK	(3 << 1)
+        -:   23:#define I2C_A78_CONTROL_INT_EN		BIT(3)
+        -:   24:#define I2C_A78_CONTROL_DMA_TX_EN	BIT(4)
+        -:   25:#define I2C_A78_CONTROL_DMA_RX_EN	BIT(5)
+        -:   26:#define I2C_A78_CONTROL_FIFO_TX_CLR	BIT(6)
+        -:   27:#define I2C_A78_CONTROL_FIFO_RX_CLR	BIT(7)
+        -:   28:
+        -:   29:#define I2C_A78_STATUS_BUSY		BIT(0)
+        -:   30:#define I2C_A78_STATUS_ARB_LOST		BIT(1)
+        -:   31:#define I2C_A78_STATUS_NACK		BIT(2)
+        -:   32:#define I2C_A78_STATUS_TX_DONE		BIT(3)
+        -:   33:#define I2C_A78_STATUS_RX_READY		BIT(4)
+        -:   34:#define I2C_A78_STATUS_FIFO_TX_FULL	BIT(5)
+        -:   35:#define I2C_A78_STATUS_FIFO_RX_EMPTY	BIT(6)
+        -:   36:#define I2C_A78_STATUS_TIMEOUT		BIT(7)
+        -:   37:
+        -:   38:#define I2C_A78_ADDRESS_7BIT_MASK	0x7F
+        -:   39:#define I2C_A78_ADDRESS_10BIT_MASK	0x3FF
+        -:   40:#define I2C_A78_ADDRESS_10BIT_EN	BIT(15)
+        -:   41:
+        -:   42:#define I2C_A78_COMMAND_START		BIT(0)
+        -:   43:#define I2C_A78_COMMAND_STOP		BIT(1)
+        -:   44:#define I2C_A78_COMMAND_READ		BIT(2)
+        -:   45:#define I2C_A78_COMMAND_WRITE		BIT(3)
+        -:   46:#define I2C_A78_COMMAND_ACK		BIT(4)
+        -:   47:#define I2C_A78_COMMAND_NACK		BIT(5)
+        -:   48:
+        -:   49:#define I2C_A78_FIFO_STATUS_TX_LEVEL_MASK	0x1F
+        -:   50:#define I2C_A78_FIFO_STATUS_RX_LEVEL_MASK	(0x1F << 8)
+        -:   51:#define I2C_A78_FIFO_STATUS_RX_LEVEL_SHIFT	8
+        -:   52:
+        -:   53:#define I2C_A78_INT_TX_DONE		BIT(0)
+        -:   54:#define I2C_A78_INT_RX_READY		BIT(1)
+        -:   55:#define I2C_A78_INT_ARB_LOST		BIT(2)
+        -:   56:#define I2C_A78_INT_NACK		BIT(3)
+        -:   57:#define I2C_A78_INT_TIMEOUT		BIT(4)
+        -:   58:#define I2C_A78_INT_FIFO_TX_EMPTY	BIT(5)
+        -:   59:#define I2C_A78_INT_FIFO_RX_FULL	BIT(6)
+        -:   60:
+        -:   61:#define I2C_A78_FIFO_SIZE		16
+        -:   62:#define I2C_A78_DMA_THRESHOLD		32
+        -:   63:#define I2C_A78_TIMEOUT_MS		1000
+        -:   64:#define I2C_A78_PM_SUSPEND_DELAY_MS	100
+        -:   65:
+        -:   66:enum i2c_a78_speed {
+        -:   67:	I2C_A78_SPEED_STD = 100000,
+        -:   68:	I2C_A78_SPEED_FAST = 400000,
+        -:   69:	I2C_A78_SPEED_FAST_PLUS = 1000000,
+        -:   70:	I2C_A78_SPEED_HIGH = 3400000,
+        -:   71:};
+        -:   72:
+        -:   73:enum i2c_a78_state {
+        -:   74:	I2C_A78_STATE_IDLE,
+        -:   75:	I2C_A78_STATE_START,
+        -:   76:	I2C_A78_STATE_ADDR,
+        -:   77:	I2C_A78_STATE_DATA,
+        -:   78:	I2C_A78_STATE_STOP,
+        -:   79:	I2C_A78_STATE_ERROR,
+        -:   80:};
+        -:   81:
+        -:   82:struct i2c_a78_dma_data {
+        -:   83:	struct dma_chan *tx_chan;
+        -:   84:	struct dma_chan *rx_chan;
+        -:   85:	dma_addr_t tx_dma_buf;
+        -:   86:	dma_addr_t rx_dma_buf;
+        -:   87:	void *tx_buf;
+        -:   88:	void *rx_buf;
+        -:   89:	size_t buf_len;
+        -:   90:	struct completion tx_complete;
+        -:   91:	struct completion rx_complete;
+        -:   92:	bool use_dma;
+        -:   93:};
+        -:   94:
+        -:   95:struct i2c_a78_dev {
+        -:   96:	struct device *dev;
+        -:   97:	void __iomem *base;
+        -:   98:	struct clk *clk;
+        -:   99:	int irq;
+        -:  100:	
+        -:  101:	struct i2c_adapter adapter;
+        -:  102:	struct i2c_msg *msgs;
+        -:  103:	int num_msgs;
+        -:  104:	int msg_idx;
+        -:  105:	
+        -:  106:	enum i2c_a78_state state;
+        -:  107:	u32 bus_freq;
+        -:  108:	u32 timeout_ms;
+        -:  109:	
+        -:  110:	spinlock_t lock;
+        -:  111:	struct completion msg_complete;
+        -:  112:	
+        -:  113:	struct i2c_a78_dma_data dma;
+        -:  114:	
+        -:  115:	bool suspended;
+        -:  116:	u32 saved_control;
+        -:  117:	u32 saved_prescaler;
+        -:  118:	
+        -:  119:	struct {
+        -:  120:		u64 tx_bytes;
+        -:  121:		u64 rx_bytes;
+        -:  122:		u32 timeouts;
+        -:  123:		u32 arb_lost;
+        -:  124:		u32 nacks;
+        -:  125:	} stats;
+        -:  126:};
+        -:  127:
+        8:  128:static inline u32 i2c_a78_readl(struct i2c_a78_dev *i2c_dev, u32 offset)
+        -:  129:{
+        8:  130:	return mock_readl(i2c_dev->base + offset);
+        -:  131:}
+------------------
+i2c_a78_readl:
+        2:  128:static inline u32 i2c_a78_readl(struct i2c_a78_dev *i2c_dev, u32 offset)
+        -:  129:{
+        2:  130:	return mock_readl(i2c_dev->base + offset);
+        -:  131:}
+------------------
+i2c_a78_readl:
+        6:  128:static inline u32 i2c_a78_readl(struct i2c_a78_dev *i2c_dev, u32 offset)
+        -:  129:{
+        6:  130:	return mock_readl(i2c_dev->base + offset);
+        -:  131:}
+------------------
+        -:  132:
+        6:  133:static inline void i2c_a78_writel(struct i2c_a78_dev *i2c_dev, u32 value, u32 offset)
+        -:  134:{
+        6:  135:	mock_writel(value, i2c_dev->base + offset);
+        6:  136:}
+------------------
+i2c_a78_writel:
+        2:  133:static inline void i2c_a78_writel(struct i2c_a78_dev *i2c_dev, u32 value, u32 offset)
+        -:  134:{
+        2:  135:	mock_writel(value, i2c_dev->base + offset);
+        2:  136:}
+------------------
+i2c_a78_writel:
+        4:  133:static inline void i2c_a78_writel(struct i2c_a78_dev *i2c_dev, u32 value, u32 offset)
+        -:  134:{
+        4:  135:	mock_writel(value, i2c_dev->base + offset);
+        4:  136:}
+------------------
+        -:  137:
+        -:  138:int i2c_a78_dma_init(struct i2c_a78_dev *i2c_dev);
+        -:  139:void i2c_a78_dma_release(struct i2c_a78_dev *i2c_dev);
+        -:  140:int i2c_a78_dma_xfer(struct i2c_a78_dev *i2c_dev, struct i2c_msg *msg);
+        -:  141:
+        -:  142:int i2c_a78_pm_init(struct i2c_a78_dev *i2c_dev);
+        -:  143:int i2c_a78_pm_suspend(struct device *dev);
+        -:  144:int i2c_a78_pm_resume(struct device *dev);
+        -:  145:
+        -:  146:#endif /* __TEST_I2C_DRIVER_H__ */
