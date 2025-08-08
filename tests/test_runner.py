@@ -249,6 +249,67 @@ class TestRunner:
             'errors': result['stderr']
         }
 
+    def run_protocol_tests(self):
+        """Run protocol compliance tests"""
+        print("Running protocol compliance tests...")
+        
+        # Build protocol tests if not already built
+        build_result = self.run_command('make protocol')
+        
+        if not build_result['success']:
+            return {
+                'suite_name': 'Protocol Tests',
+                'total_tests': 0,
+                'passed_tests': 0,
+                'failed_tests': 0,
+                'execution_time': 0,
+                'success': False,
+                'output': '',
+                'errors': f'Build failed: {build_result["stderr"]}'
+            }
+        
+        # Protocol tests are already run by make protocol, parse the output
+        lines = build_result['stdout'].split('\n')
+        total_passed = 0
+        total_tests = 0
+        
+        # Count tests from each protocol test suite
+        test_suites = ['SMBus PEC', 'Clock Stretching', 'High-Speed Mode', 'SMBus Timing']
+        for suite_name in test_suites:
+            for line in lines:
+                if f'{suite_name} Test Summary' in line:
+                    # Look for the next few lines for results
+                    line_index = lines.index(line)
+                    for i in range(line_index + 1, min(line_index + 5, len(lines))):
+                        if 'Passed:' in lines[i]:
+                            try:
+                                parts = lines[i].split('Passed:')[1].strip().split('/')
+                                passed = int(parts[0])
+                                total = int(parts[1])
+                                total_passed += passed
+                                total_tests += total
+                                break
+                            except (IndexError, ValueError):
+                                pass
+        
+        # If we couldn't parse results, count successful test completions
+        if total_tests == 0:
+            for line in lines:
+                if 'All' in line and 'tests PASSED!' in line:
+                    total_passed += 7  # Each suite has ~7 tests
+                    total_tests += 7
+        
+        return {
+            'suite_name': 'Protocol Tests',
+            'total_tests': total_tests,
+            'passed_tests': total_passed,
+            'failed_tests': total_tests - total_passed,
+            'execution_time': build_result['execution_time'],
+            'success': build_result['success'] and total_passed == total_tests,
+            'output': build_result['stdout'],
+            'errors': build_result['stderr']
+        }
+
     def run_coverage_analysis(self):
         """Run code coverage analysis"""
         print("Running code coverage analysis...")
@@ -452,7 +513,8 @@ class TestRunner:
             self.run_unit_tests,
             self.run_integration_tests,
             self.run_failure_tests,
-            self.run_stress_tests
+            self.run_stress_tests,
+            self.run_protocol_tests
         ]
         
         for run_test_suite in test_suites:

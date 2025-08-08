@@ -19,7 +19,7 @@
 <body>
     <div class="header">
         <h1>I2C A78 Driver - Test Results Report</h1>
-        <p>Generated: 2025-08-07T12:49:07.478704</p>
+        <p>Generated: 2025-08-08T13:13:19.669078</p>
         <p>Platform: Linux x86_64</p>
     </div>
     
@@ -27,12 +27,12 @@
         <h2>Test Summary</h2>
         <table>
             <tr><th>Metric</th><th>Value</th></tr>
-            <tr><td>Total Tests</td><td>23</td></tr>
-            <tr><td>Passed Tests</td><td style="color: green;">23</td></tr>
+            <tr><td>Total Tests</td><td>50</td></tr>
+            <tr><td>Passed Tests</td><td style="color: green;">50</td></tr>
             <tr><td>Failed Tests</td><td style="color: red;">0</td></tr>
             <tr><td>Success Rate</td><td>100.0%</td></tr>
             <tr><td>Code Coverage</td><td>57.4%</td></tr>
-            <tr><td>Execution Time</td><td>2.92s</td></tr>
+            <tr><td>Execution Time</td><td>5.33s</td></tr>
         </table>
     </div>
     
@@ -48,12 +48,12 @@
 
 Running test: Device Creation
 Testing device creation...
-[MOCK] Allocated 352 bytes at 0x5f57bb8b22b0
+[MOCK] Allocated 352 bytes at 0x5712de5a72b0
 ✓ Device creation test passed
 
 Running test: Register Access
 Testing register access...
-[MOCK] Allocated 352 bytes at 0x5f57bb8b2420
+[MOCK] Allocated 352 bytes at 0x5712de5a7420
 [MOCK] Writing register 0x00: 0x12345678
 [MOCK] Reading register 0x00: 0x12345678
 [MOCK] Writing register 0x04: 0xabcdef00
@@ -62,7 +62,7 @@ Testing register access...
 
 Running test: Speed Configuration
 Testing speed configuration...
-[MOCK] Allocated 352 bytes at 0x5f57bb8b2590
+[MOCK] Allocated 352 bytes at 0x5712de5a7590
 ✓ Speed configuration test passed
 
 Running test: Bit Definitions
@@ -71,12 +71,12 @@ Testing bit definitions...
 
 Running test: DMA Structure
 Testing DMA structure...
-[MOCK] Allocated 352 bytes at 0x5f57bb8b2700
+[MOCK] Allocated 352 bytes at 0x5712de5a7700
 ✓ DMA structure test passed
 
 Running test: Statistics Structure
 Testing statistics structure...
-[MOCK] Allocated 352 bytes at 0x5f57bb8b2870
+[MOCK] Allocated 352 bytes at 0x5712de5a7870
 ✓ Statistics structure test passed
 
 Running test: Address Handling
@@ -100,8 +100,8 @@ All tests PASSED! ✓
 
 Running test: DMA Initialization
 Testing DMA initialization...
-[MOCK] Allocated 80 bytes at 0x5dbf757b12b0
-[MOCK] Allocated 352 bytes at 0x5dbf757b1310
+[MOCK] Allocated 80 bytes at 0x56e94e1fd2b0
+[MOCK] Allocated 352 bytes at 0x56e94e1fd310
 [MOCK] i2c_a78_dma_init called
 [MOCK] Initializing completion
 [MOCK] Initializing completion
@@ -117,8 +117,8 @@ Testing I2C message structure...
 
 Running test: DMA Threshold
 Testing DMA threshold logic...
-[MOCK] Allocated 80 bytes at 0x5dbf757b1480
-[MOCK] Allocated 352 bytes at 0x5dbf757b14e0
+[MOCK] Allocated 80 bytes at 0x56e94e1fd480
+[MOCK] Allocated 352 bytes at 0x56e94e1fd4e0
 ✓ DMA threshold test passed
 
 Running test: Address Modes
@@ -131,20 +131,20 @@ Testing transfer directions...
 
 Running test: Error Conditions
 Testing error conditions...
-[MOCK] Allocated 80 bytes at 0x5dbf757b1650
-[MOCK] Allocated 352 bytes at 0x5dbf757b16b0
+[MOCK] Allocated 80 bytes at 0x56e94e1fd650
+[MOCK] Allocated 352 bytes at 0x56e94e1fd6b0
 ✓ Error conditions test passed
 
 Running test: Power Management Integration
 Testing power management integration...
-[MOCK] Allocated 80 bytes at 0x5dbf757b1820
-[MOCK] Allocated 352 bytes at 0x5dbf757b1880
+[MOCK] Allocated 80 bytes at 0x56e94e1fd820
+[MOCK] Allocated 352 bytes at 0x56e94e1fd880
 ✓ Power management integration test passed
 
 Running test: Register Context Save/Restore
 Testing register context save/restore...
-[MOCK] Allocated 80 bytes at 0x5dbf757b19f0
-[MOCK] Allocated 352 bytes at 0x5dbf757b1a50
+[MOCK] Allocated 80 bytes at 0x56e94e1fd9f0
+[MOCK] Allocated 352 bytes at 0x56e94e1fda50
 [MOCK] Writing register 0x00: 0x12345678
 [MOCK] Writing register 0x1c: 0xabcdef00
 [MOCK] Reading register 0x00: 0x12345678
@@ -165,7 +165,7 @@ All tests PASSED! ✓
             <h3>Failure Scenario Tests</h3>
             <p><strong>Status:</strong> FAILED</p>
             <p><strong>Tests:</strong> 0/0 passed</p>
-            <p><strong>Execution Time:</strong> 0.22s</p>
+            <p><strong>Execution Time:</strong> 0.29s</p>
             <div class="output" style="background-color: #f8d7da;">Errors:\nSegmentation fault (core dumped)
 </div></div>
         <div class="suite pass">
@@ -177,18 +177,18 @@ All tests PASSED! ✓
 
 Running stress test: Rapid Transfers
 Testing rapid consecutive transfers...
-[MOCK] Allocated 80 bytes at 0x5b12291db2b0
-[MOCK] Allocated 352 bytes at 0x5b12291db310
+[MOCK] Allocated 80 bytes at 0x62ebd4fb02b0
+[MOCK] Allocated 352 bytes at 0x62ebd4fb0310
 Completed 1000 transfers in 0.000 seconds
-Transfer rate: 142857142.9 transfers/second
+Transfer rate: 125000000.0 transfers/second
 Total bytes transferred: 8016 TX, 7984 RX
 ✓ Rapid transfers stress test passed
 Test completed in 0.000 seconds
 
 Running stress test: Variable Message Sizes
 Testing variable message sizes...
-[MOCK] Allocated 80 bytes at 0x5b12291db480
-[MOCK] Allocated 352 bytes at 0x5b12291db4e0
+[MOCK] Allocated 80 bytes at 0x62ebd4fb0480
+[MOCK] Allocated 352 bytes at 0x62ebd4fb04e0
 Transfer size 1: PIO
 Transfer size 2: PIO
 Transfer size 3: PIO
@@ -452,8 +452,8 @@ Test completed in 0.000 seconds
 
 Running stress test: Address Space Coverage
 Testing address space coverage...
-[MOCK] Allocated 80 bytes at 0x5b12291db760
-[MOCK] Allocated 352 bytes at 0x5b12291db7c0
+[MOCK] Allocated 80 bytes at 0x62ebd4fb0760
+[MOCK] Allocated 352 bytes at 0x62ebd4fb07c0
 Testing 7-bit addresses (0x01-0x7F)...
 Testing 10-bit addresses (sample)...
 ✓ Address space coverage stress test passed
@@ -461,8 +461,8 @@ Test completed in 0.000 seconds
 
 Running stress test: Register Access Patterns
 Testing intensive register access patterns...
-[MOCK] Allocated 80 bytes at 0x5b12291db930
-[MOCK] Allocated 352 bytes at 0x5b12291db990
+[MOCK] Allocated 80 bytes at 0x62ebd4fb0930
+[MOCK] Allocated 352 bytes at 0x62ebd4fb0990
 [MOCK] Writing register 0x00: 0x00000000
 [MOCK] Reading register 0x00: 0x00000000
 [MOCK] Writing register 0x00: 0xffffffff
@@ -13265,12 +13265,12 @@ Testing intensive register access patterns...
 [MOCK] Reading register 0x1c: 0xcafebabe
 Completed intensive register access test
 ✓ Register access patterns stress test passed
-Test completed in 0.005 seconds
+Test completed in 0.006 seconds
 
 Running stress test: Power Management Cycles
 Testing power management cycles...
-[MOCK] Allocated 80 bytes at 0x5b12291dbb00
-[MOCK] Allocated 352 bytes at 0x5b12291dbb60
+[MOCK] Allocated 80 bytes at 0x62ebd4fb0b00
+[MOCK] Allocated 352 bytes at 0x62ebd4fb0b60
 [MOCK] Reading register 0x00: 0xcafebabe
 [MOCK] Reading register 0x1c: 0xcafebabe
 [MOCK] Writing register 0x1c: 0xcafebabe
@@ -13686,8 +13686,8 @@ Test completed in 0.000 seconds
 
 Running stress test: Error Recovery Cycles
 Testing error recovery cycles...
-[MOCK] Allocated 80 bytes at 0x5b12291dbcd0
-[MOCK] Allocated 352 bytes at 0x5b12291dbd30
+[MOCK] Allocated 80 bytes at 0x62ebd4fb0cd0
+[MOCK] Allocated 352 bytes at 0x62ebd4fb0d30
 [MOCK] Writing register 0x18: 0x000000ff
 [MOCK] Writing register 0x18: 0x000000ff
 [MOCK] Writing register 0x18: 0x000000ff
@@ -13747,8 +13747,8 @@ Test completed in 0.000 seconds
 
 Running stress test: FIFO Boundary Conditions
 Testing FIFO boundary conditions...
-[MOCK] Allocated 80 bytes at 0x5b12291dbea0
-[MOCK] Allocated 352 bytes at 0x5b12291dbf00
+[MOCK] Allocated 80 bytes at 0x62ebd4fb0ea0
+[MOCK] Allocated 352 bytes at 0x62ebd4fb0f00
 [MOCK] Writing register 0x14: 0x00001010
 [MOCK] Writing register 0x14: 0x00000000
 [MOCK] Writing register 0x00: 0x000000c0
@@ -14054,9 +14054,336 @@ Test completed in 0.000 seconds
 
 === Stress Test Summary ===
 Passed: 7/7
-Total execution time: 0.005 seconds
+Total execution time: 0.007 seconds
 System stability: STABLE
 All stress tests PASSED! System is stable under load ✓
+</div></div>
+        <div class="suite pass">
+            <h3>Protocol Tests</h3>
+            <p><strong>Status:</strong> PASSED</p>
+            <p><strong>Tests:</strong> 27/27 passed</p>
+            <p><strong>Execution Time:</strong> 0.15s</p>
+            <div class="output">make[1]: Entering directory '/home/rwhite/src/i2c-driver/tests'
+Running protocol compliance tests...
+=== SMBus PEC Tests ===
+./test_smbus_pec
+=== SMBus v2.0 PEC (Packet Error Checking) Tests ===
+
+Running test: Basic PEC Calculation
+Testing basic PEC calculation...
+Test data: 0xB4 0x06 0x00
+Expected PEC: 0x79, Calculated: 0x3F
+✓ Basic PEC calculation test passed
+
+Running test: SMBus Read Byte with PEC
+Testing SMBus Read Byte with PEC...
+[MOCK] Allocated 352 bytes at 0x58a9b23372b0
+[MOCK] Writing register 0x08: 0x00000042
+Command: 0x10, Read Data: 0x00, PEC: 0x99
+✓ SMBus Read Byte with PEC test passed
+
+Running test: SMBus Write Byte with PEC
+Testing SMBus Write Byte with PEC...
+[MOCK] Allocated 352 bytes at 0x58a9b2337420
+Command: 0x20, Data: 0x55, PEC: 0xAB
+✓ SMBus Write Byte with PEC test passed
+
+Running test: SMBus Block Read with PEC
+Testing SMBus Block Read with PEC...
+Block Read - Addr: 0x36, Cmd: 0x12, Count: 4
+Block Data: 0x11 0x22 0x33 0x44 PEC: 0xF5
+✓ SMBus Block Read with PEC test passed
+
+Running test: PEC Error Detection
+Testing PEC error detection...
+Correct data PEC: 0x24
+Corrupted data PEC: 0x23
+✓ PEC error detection test passed
+
+Running test: Host Notify with PEC
+Testing Host Notify protocol with PEC...
+Host Notify - Device: 0x25, Data: 0x3412, PEC: 0xA5
+✓ Host Notify PEC test passed
+
+Running test: Alert Response with PEC
+Testing Alert Response Address with PEC...
+ARA Response - Device: 0x45, PEC: 0x36
+✓ Alert Response PEC test passed
+
+=== SMBus PEC Test Summary ===
+Passed: 7/7
+SMBus v2.0 PEC compliance: 100.0%
+All SMBus PEC tests PASSED! ✓
+=== Clock Stretching Tests ===
+./test_clock_stretching
+=== I2C v2.1 Clock Stretching Tests ===
+
+Running test: Normal Clock Stretching
+Testing normal clock stretching behavior...
+[MOCK] Allocated 352 bytes at 0x557f6026a2b0
+Mock: Clock stretch started, duration: 5000 us
+Mock: Clock stretch ended after 5004 us
+Clock stretch duration: 5008 us
+Clock stretch count: 1
+✓ Normal clock stretching test passed
+
+Running test: Clock Stretch Timeout
+Testing clock stretching timeout...
+[MOCK] Allocated 352 bytes at 0x557f6026a420
+Mock: Clock stretch started, duration: 15000 us
+Clock stretch timeout detected after 10012 us
+✓ Clock stretching timeout test passed
+
+Running test: Multiple Clock Stretches
+Testing multiple clock stretching events...
+[MOCK] Allocated 352 bytes at 0x557f6026a590
+Clock stretch iteration 1/5
+Mock: Clock stretch started, duration: 2000 us
+Mock: Clock stretch ended after 2153 us
+Clock stretch iteration 2/5
+Mock: Clock stretch started, duration: 2000 us
+Mock: Clock stretch ended after 2112 us
+Clock stretch iteration 3/5
+Mock: Clock stretch started, duration: 2000 us
+Mock: Clock stretch ended after 2014 us
+Clock stretch iteration 4/5
+Mock: Clock stretch started, duration: 2000 us
+Mock: Clock stretch ended after 2114 us
+Clock stretch iteration 5/5
+Mock: Clock stretch started, duration: 2000 us
+Mock: Clock stretch ended after 2088 us
+Total transaction time: 13377 us
+Expected minimum: 10000 us
+Total stretch events: 5
+✓ Multiple clock stretching test passed
+
+Running test: Clock Stretch During Read
+Testing clock stretching during read operation...
+[MOCK] Allocated 352 bytes at 0x557f6026a700
+Simulating slave data preparation delay...
+Mock: Clock stretch started, duration: 3000 us
+Mock: Clock stretch ended after 3097 us
+Read completed after 3101 us
+Read data: 0xA0 0xA1 0xA2 0xA3 
+✓ Clock stretching during read test passed
+
+Running test: Clock Stretch Recovery
+Testing recovery from clock stretch timeout...
+[MOCK] Allocated 352 bytes at 0x557f6026a870
+First transfer (will timeout)...
+Mock: Clock stretch started, duration: 20000 us
+Timeout detected, initiating recovery...
+Second transfer (should succeed)...
+Mock: Clock stretch started, duration: 2000 us
+Mock: Clock stretch ended after 2063 us
+Recovery completed successfully
+✓ Clock stretch recovery test passed
+
+Running test: Clock Stretch at Different Speeds
+Testing clock stretching at different I2C speeds...
+[MOCK] Allocated 352 bytes at 0x557f6026a9e0
+Testing at 100kHz...
+Mock: Clock stretch started, duration: 5000 us
+Mock: Clock stretch ended after 5152 us
+Speed: 100kHz, Stretch: 5155 us
+Testing at 400kHz...
+Mock: Clock stretch started, duration: 5000 us
+Mock: Clock stretch ended after 5112 us
+Speed: 400kHz, Stretch: 5117 us
+Testing at 1MHz...
+Mock: Clock stretch started, duration: 2000 us
+Mock: Clock stretch ended after 2072 us
+Speed: 1MHz, Stretch: 2076 us
+Testing at 3.4MHz...
+Mock: Clock stretch started, duration: 2000 us
+Mock: Clock stretch ended after 2090 us
+Speed: 3.4MHz, Stretch: 2091 us
+✓ Clock stretching at different speeds test passed
+
+=== Clock Stretching Test Summary ===
+Passed: 6/6
+I2C v2.1 Clock Stretching compliance: 100.0%
+All Clock Stretching tests PASSED! ✓
+=== High-Speed Mode Tests ===
+./test_high_speed_mode
+=== I2C v2.1 High-Speed Mode Protocol Tests ===
+
+Running test: Master Code Validation
+Testing high-speed master code validation...
+Testing valid master code: 0x08
+Testing valid master code: 0x09
+Testing valid master code: 0x0A
+Testing valid master code: 0x0B
+Testing valid master code: 0x0C
+Testing valid master code: 0x0D
+Testing valid master code: 0x0E
+Testing valid master code: 0x0F
+Testing invalid master code: 0x00
+Testing invalid master code: 0x07
+Testing invalid master code: 0x10
+Testing invalid master code: 0xFF
+✓ Master code validation test passed
+
+Running test: HS Mode Entry Sequence
+Testing high-speed mode entry sequence...
+[MOCK] Allocated 352 bytes at 0x581741e7c2b0
+Step 1: START at Fast mode (400kHz)
+Step 2: Send master code 0x0A
+[MOCK] Writing register 0x04: 0x00000004
+[MOCK] Reading register 0x04: 0x00000004
+Step 3: Repeated START condition
+[MOCK] Writing register 0x10: 0x00000001
+Step 4: Switch to high-speed mode (3.4MHz)
+Mock: Entered HS mode with master code 0x0A at 3400000 Hz
+Step 5: Normal transaction at high speed
+✓ High-speed mode entry sequence test passed
+
+Running test: HS Mode Exit Sequence
+Testing high-speed mode exit sequence...
+[MOCK] Allocated 352 bytes at 0x581741e7c420
+Mock: Entered HS mode with master code 0x0C at 3400000 Hz
+Currently in HS mode with master code 0x0C
+Step 1: Complete current transaction
+[MOCK] Writing register 0x04: 0x00000008
+Step 2: Send STOP condition
+[MOCK] Writing register 0x10: 0x00000002
+Step 3: Return to Fast mode (400kHz)
+Mock: Exited HS mode after 2961 ns
+Step 4: Bus idle
+✓ High-speed mode exit sequence test passed
+
+Running test: HS Mode Timing Requirements
+Testing high-speed mode timing requirements...
+[MOCK] Allocated 352 bytes at 0x581741e7c590
+Testing setup time requirement (min 160ns)...
+Measured setup time: 73777 ns
+Testing hold time requirement (min 60ns)...
+Measured hold time: 62240 ns
+Testing frequency range: 3060000 - 3740000 Hz
+✓ High-speed mode timing requirements test passed
+
+Running test: HS Mode Multi-Master
+Testing high-speed mode multi-master scenarios...
+[MOCK] Allocated 352 bytes at 0x581741e7c700
+[MOCK] Allocated 352 bytes at 0x581741e7c870
+Master 1 using code 0x09
+Master 2 using code 0x0E
+Master 1 enters HS mode...
+Mock: Entered HS mode with master code 0x09 at 3400000 Hz
+Testing HS mode arbitration...
+Master 2 loses arbitration, waits for bus
+Master 1 completes transaction
+Mock: Exited HS mode after 994 ns
+Master 2 now enters HS mode...
+Mock: Entered HS mode with master code 0x0E at 3400000 Hz
+Mock: Exited HS mode after 579 ns
+✓ High-speed mode multi-master test passed
+
+Running test: HS Mode Error Conditions
+Testing high-speed mode error conditions...
+[MOCK] Allocated 352 bytes at 0x581741e7c9e0
+Test 1: Invalid master code 0x07
+Driver correctly rejects invalid master code
+Test 2: Attempting HS mode without master code
+Driver correctly prevents HS mode without master code
+Test 3: Clock speed violation in HS mode
+Driver detects clock speed violation: 4000000 Hz
+Test 4: Arbitration loss during master code
+[MOCK] Writing register 0x04: 0x00000002
+[MOCK] Reading register 0x04: 0x00000002
+Arbitration lost during master code transmission
+✓ High-speed mode error conditions test passed
+
+Running test: HS Mode Performance
+Testing high-speed mode performance...
+[MOCK] Allocated 352 bytes at 0x581741e7cb50
+Performing 64-byte transfer at 3.4MHz...
+Mock: Entered HS mode with master code 0x0B at 3400000 Hz
+Transfer time: 231777 ns
+Throughput: 2.21 Mbps
+Expected minimum throughput: 2.0 Mbps
+Mock: Exited HS mode after 259363 ns
+✓ High-speed mode performance test passed
+
+=== High-Speed Mode Test Summary ===
+Passed: 7/7
+I2C v2.1 High-Speed Mode compliance: 100.0%
+All High-Speed Mode tests PASSED! ✓
+=== SMBus Timing Tests ===
+./test_smbus_timing
+=== SMBus v2.0 Timing Specification Tests ===
+
+Running test: SMBus Timeout Compliance
+Testing SMBus v2.0 timeout compliance (25-35ms)...
+[MOCK] Allocated 352 bytes at 0x55cca8ac22b0
+Testing normal transaction within timeout...
+Mock: SMBus transaction started at 5709955776182 us
+Transaction completed in 6752 us
+Testing timeout detection...
+SMBus timeout violation detected: 40083 us
+✓ SMBus timeout compliance test passed
+
+Running test: SMBus Clock Timing
+Testing SMBus clock timing requirements...
+[MOCK] Allocated 352 bytes at 0x55cca8ac2420
+Testing clock low period (min 4.7ms at 100kHz)...
+Clock low duration: 5075 us
+Testing clock high period (min 4.0ms at 100kHz)...
+Clock high duration: 4567 us
+✓ SMBus clock timing test passed
+
+Running test: SMBus Setup/Hold Timing
+Testing SMBus setup/hold timing (250ns/300ns)...
+Testing data setup time...
+Data setup time: 60935 ns
+Testing data hold time...
+Data hold time: 59960 ns
+✓ SMBus setup/hold timing test passed
+
+Running test: SMBus vs I2C Timing
+Testing SMBus vs I2C timing differences...
+[MOCK] Allocated 352 bytes at 0x55cca8ac2590
+[MOCK] Allocated 352 bytes at 0x55cca8ac2700
+SMBus device timeout: 30 ms
+I2C device timeout: 1000 ms
+SMBus frequency: 100000 Hz
+I2C frequency: 400000 Hz
+Comparing timing characteristics:
+SMBus 100kHz - Period: 10 us, Low min: 4 us, High min: 4 us
+I2C 400kHz - Period: 2 us, Low min: 2 us, High min: 1 us
+✓ SMBus vs I2C timing comparison test passed
+
+Running test: SMBus Alert Timing
+Testing SMBus Alert Response timing...
+[MOCK] Allocated 352 bytes at 0x55cca8ac2870
+Simulating SMBus Alert condition...
+[MOCK] Writing register 0x04: 0x00000080
+Master responding to alert...
+Alert response time: 194 us
+[MOCK] Writing register 0x04: 0x00000000
+✓ SMBus Alert Response timing test passed
+
+Running test: SMBus Host Notify Timing
+Testing SMBus Host Notify timing...
+[MOCK] Allocated 352 bytes at 0x55cca8ac29e0
+Device initiating Host Notify...
+Host Notify completion time: 271 us
+✓ SMBus Host Notify timing test passed
+
+Running test: SMBus Block Transaction Timing
+Testing SMBus Block transaction timing...
+[MOCK] Allocated 352 bytes at 0x55cca8ac2b50
+Testing maximum SMBus block write (32 bytes)...
+Block transaction time: 3222 us (expected ~3150 us)
+Block transfer throughput: 79.5 kbps
+✓ SMBus Block transaction timing test passed
+
+=== SMBus Timing Test Summary ===
+Passed: 7/7
+SMBus v2.0 Timing compliance: 100.0%
+All SMBus Timing tests PASSED! ✓
+Protocol compliance tests completed!
+make[1]: Leaving directory '/home/rwhite/src/i2c-driver/tests'
 </div></div>
     </div>
 </body>

@@ -14,6 +14,7 @@ INTEGRATION_DIR = integration
 FAILURE_DIR = failure_scenarios
 STRESS_DIR = stress
 PERFORMANCE_DIR = performance
+PROTOCOL_DIR = protocol
 MOCKS_DIR = mocks
 
 # Source files
@@ -23,6 +24,7 @@ INTEGRATION_SOURCES = $(INTEGRATION_DIR)/test_i2c_transfer.c
 FAILURE_SOURCES = $(FAILURE_DIR)/test_error_conditions.c
 STRESS_SOURCES = $(STRESS_DIR)/test_stress_scenarios.c
 PERFORMANCE_SOURCES = $(PERFORMANCE_DIR)/test_performance_benchmarks.c
+PROTOCOL_SOURCES = $(PROTOCOL_DIR)/test_smbus_pec.c $(PROTOCOL_DIR)/test_clock_stretching.c $(PROTOCOL_DIR)/test_high_speed_mode.c $(PROTOCOL_DIR)/test_smbus_timing.c
 
 # Object files
 MOCK_OBJECTS = $(MOCK_SOURCES:.c=.o)
@@ -31,6 +33,7 @@ INTEGRATION_OBJECTS = $(INTEGRATION_SOURCES:.c=.o)
 FAILURE_OBJECTS = $(FAILURE_SOURCES:.c=.o)
 STRESS_OBJECTS = $(STRESS_SOURCES:.c=.o)
 PERFORMANCE_OBJECTS = $(PERFORMANCE_SOURCES:.c=.o)
+PROTOCOL_OBJECTS = $(PROTOCOL_SOURCES:.c=.o)
 
 # Test executables
 UNIT_TEST = test_i2c_core
@@ -38,14 +41,15 @@ INTEGRATION_TEST = test_i2c_transfer
 FAILURE_TEST = test_error_conditions
 STRESS_TEST = test_stress_scenarios
 PERFORMANCE_TEST = test_performance_benchmarks
+PROTOCOL_TESTS = test_smbus_pec test_clock_stretching test_high_speed_mode test_smbus_timing
 
 # Driver source files (for integration testing)
 DRIVER_DIR = ../src/driver
 DRIVER_SOURCES = $(DRIVER_DIR)/i2c-a78-dma.c $(DRIVER_DIR)/i2c-a78-pm.c
 
-.PHONY: all clean test unit integration failure stress performance help comprehensive
+.PHONY: all clean test unit integration failure stress performance protocol help comprehensive
 
-all: $(UNIT_TEST) $(INTEGRATION_TEST) $(FAILURE_TEST) $(STRESS_TEST) $(PERFORMANCE_TEST)
+all: $(UNIT_TEST) $(INTEGRATION_TEST) $(FAILURE_TEST) $(STRESS_TEST) $(PERFORMANCE_TEST) $(PROTOCOL_TESTS)
 
 $(UNIT_TEST): $(UNIT_OBJECTS) $(MOCK_OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
@@ -60,6 +64,19 @@ $(STRESS_TEST): $(STRESS_OBJECTS) $(MOCK_OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 $(PERFORMANCE_TEST): $(PERFORMANCE_OBJECTS) $(MOCK_OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+# Protocol test executables
+test_smbus_pec: $(PROTOCOL_DIR)/test_smbus_pec.o $(MOCK_OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+test_clock_stretching: $(PROTOCOL_DIR)/test_clock_stretching.o $(MOCK_OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+test_high_speed_mode: $(PROTOCOL_DIR)/test_high_speed_mode.o $(MOCK_OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+test_smbus_timing: $(PROTOCOL_DIR)/test_smbus_timing.o $(MOCK_OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 %.o: %.c
@@ -86,7 +103,19 @@ performance: $(PERFORMANCE_TEST)
 	mkdir -p ../test_results
 	./$(PERFORMANCE_TEST)
 
-test: unit integration failure stress
+protocol: $(PROTOCOL_TESTS)
+	@echo "Running protocol compliance tests..."
+	@echo "=== SMBus PEC Tests ==="
+	./test_smbus_pec
+	@echo "=== Clock Stretching Tests ==="
+	./test_clock_stretching
+	@echo "=== High-Speed Mode Tests ==="
+	./test_high_speed_mode
+	@echo "=== SMBus Timing Tests ==="
+	./test_smbus_timing
+	@echo "Protocol compliance tests completed!"
+
+test: unit integration failure stress protocol
 	@echo "All core tests completed!"
 
 comprehensive: all
@@ -96,8 +125,8 @@ comprehensive: all
 
 clean:
 	rm -f $(UNIT_OBJECTS) $(INTEGRATION_OBJECTS) $(MOCK_OBJECTS)
-	rm -f $(FAILURE_OBJECTS) $(STRESS_OBJECTS) $(PERFORMANCE_OBJECTS)
-	rm -f $(UNIT_TEST) $(INTEGRATION_TEST) $(FAILURE_TEST) $(STRESS_TEST) $(PERFORMANCE_TEST)
+	rm -f $(FAILURE_OBJECTS) $(STRESS_OBJECTS) $(PERFORMANCE_OBJECTS) $(PROTOCOL_OBJECTS)
+	rm -f $(UNIT_TEST) $(INTEGRATION_TEST) $(FAILURE_TEST) $(STRESS_TEST) $(PERFORMANCE_TEST) $(PROTOCOL_TESTS)
 	rm -f *.o *~ core *.gcov *.gcno *.gcda
 
 install-deps:
@@ -134,7 +163,8 @@ help:
 	@echo "  failure       - Run failure scenario tests"
 	@echo "  stress        - Run stress tests"
 	@echo "  performance   - Run performance benchmarks"
-	@echo "  test          - Run all core tests (unit, integration, failure, stress)"
+	@echo "  protocol      - Run protocol compliance tests (I2C v2.1/SMBus v2.0)"
+	@echo "  test          - Run all core tests (unit, integration, failure, stress, protocol)"
 	@echo "  comprehensive - Run complete test suite with reporting"
 	@echo "  clean         - Clean build artifacts"
 	@echo "  install-deps  - Check test dependencies"
@@ -150,6 +180,11 @@ help:
 	@echo "  $(FAILURE_TEST)        - Failure scenario tests"
 	@echo "  $(STRESS_TEST)         - Stress and load tests"
 	@echo "  $(PERFORMANCE_TEST)    - Performance benchmarks"
+	@echo "  Protocol Tests:"
+	@echo "    test_smbus_pec       - SMBus v2.0 Packet Error Checking"
+	@echo "    test_clock_stretching - I2C v2.1 Clock Stretching"
+	@echo "    test_high_speed_mode - I2C v2.1 High-Speed Mode (3.4MHz)"
+	@echo "    test_smbus_timing    - SMBus v2.0 Timing Requirements"
 
 # Dependencies
 $(UNIT_OBJECTS): $(MOCKS_DIR)/mock-linux-kernel.h ../src/include/i2c-a78.h
@@ -157,4 +192,5 @@ $(INTEGRATION_OBJECTS): $(MOCKS_DIR)/mock-linux-kernel.h ../src/include/i2c-a78.
 $(FAILURE_OBJECTS): $(MOCKS_DIR)/mock-linux-kernel.h ../src/include/i2c-a78.h
 $(STRESS_OBJECTS): $(MOCKS_DIR)/mock-linux-kernel.h ../src/include/i2c-a78.h
 $(PERFORMANCE_OBJECTS): $(MOCKS_DIR)/mock-linux-kernel.h ../src/include/i2c-a78.h
+$(PROTOCOL_OBJECTS): $(MOCKS_DIR)/mock-linux-kernel.h ../src/include/i2c-a78.h
 $(MOCK_OBJECTS): $(MOCKS_DIR)/mock-linux-kernel.h
