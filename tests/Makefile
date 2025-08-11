@@ -135,9 +135,19 @@ install-deps:
 	@echo "Dependencies check passed!"
 
 coverage: CFLAGS += --coverage
-coverage: clean all test
+coverage: clean all
+	@echo "Running coverage-instrumented tests..."
+	./$(UNIT_TEST)
+	./$(INTEGRATION_TEST)  
+	./$(FAILURE_TEST)
+	./$(STRESS_TEST)
+	./$(PERFORMANCE_TEST)
+	./test_smbus_pec
+	./test_clock_stretching
+	./test_high_speed_mode
+	./test_smbus_timing
 	@echo "Generating coverage report..."
-	gcov $(UNIT_SOURCES) $(INTEGRATION_SOURCES) $(MOCK_SOURCES)
+	gcov $(UNIT_SOURCES) $(INTEGRATION_SOURCES) $(MOCK_SOURCES) $(FAILURE_SOURCES) $(STRESS_SOURCES) $(PERFORMANCE_SOURCES) $(PROTOCOL_SOURCES)
 	@echo "Coverage report generated (*.gcov files)"
 
 valgrind: all
