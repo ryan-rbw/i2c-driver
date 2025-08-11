@@ -15,7 +15,7 @@ jobs:
         gcc-version: [9, 10, 11, 12]
         
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Install dependencies
       run: |
@@ -45,7 +45,7 @@ jobs:
         cd tests && make static-analysis
         
     - name: Upload test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-results-gcc${{ matrix.gcc-version }}
         path: |
@@ -54,7 +54,7 @@ jobs:
           
     - name: Upload coverage to Codecov
       if: matrix.gcc-version == 11
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: tests/*.gcov
         fail_ci_if_error: false
@@ -67,7 +67,7 @@ jobs:
         kernel-headers: ['5.4', '5.15', '6.1', '6.5']
         
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Install kernel headers
       run: |
@@ -84,13 +84,17 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Check documentation
       run: |
         # Check that all public functions are documented
-        find src/ -name "*.c" -o -name "*.h" | xargs grep -l "static inline\|extern\|EXPORT_SYMBOL" | \
-        xargs grep -L "/**" && echo "Missing documentation found" && exit 1 || echo "Documentation check passed"
+        if find src/ -name "*.c" -o -name "*.h" | xargs grep -l "static inline\|extern\|EXPORT_SYMBOL" | xargs grep -L "/**" | grep -q .; then
+          echo "Missing documentation found"
+          exit 1
+        else
+          echo "Documentation check passed"
+        fi
         
     - name: Validate device tree bindings
       run: |
@@ -104,18 +108,24 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Security scan
       run: |
         # Check for common security issues in kernel code
-        find src/ -name "*.c" -exec grep -l "strcpy\|strcat\|sprintf\|gets" {} \; && \
-        echo "Potential security issues found" && exit 1 || echo "Security check passed"
+        if find src/ -name "*.c" -exec grep -l "strcpy\|strcat\|sprintf\|gets" {} \; | grep -q .; then
+          echo "Potential security issues found"
+          exit 1
+        else
+          echo "Security check passed"
+        fi
         
     - name: Check for secrets
       run: |
-        # Make sure no secrets are committed
-        if git log --all --full-history -- | grep -i -E "(password|secret|key|token)" | head -1; then
-          echo "Potential secrets found in git history"
+        # Check for potential hardcoded credentials in source files
+        if find . -name "*.c" -o -name "*.h" | xargs grep -iE "(password|secret|api_key|token)\s*=\s*['\"][^'\"]+['\"]" 2>/dev/null; then
+          echo "Potential hardcoded secrets found"
           exit 1
+        else
+          echo "No hardcoded secrets found"
         fi
