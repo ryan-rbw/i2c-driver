@@ -94,7 +94,7 @@ jobs:
         
     - name: Validate device tree bindings
       run: |
-        if [ -f docs/devicetree/bindings/i2c/arm,cortex-a78-i2c.yaml ]; then
+        if [ -f docs/devicetree/bindings/i2c/arm,a78-i2c.yaml ]; then
           echo "Device tree bindings found"
         else
           echo "Warning: Device tree bindings documentation missing"

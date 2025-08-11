@@ -130,11 +130,30 @@ struct i2c_a78_dev {
 	} stats;
 };
 
+/**
+ * i2c_a78_readl - Read 32-bit register value
+ * @i2c_dev: I2C device structure
+ * @offset: Register offset from base address
+ *
+ * Performs a relaxed 32-bit read from the I2C controller register space.
+ * Uses readl_relaxed() for better performance on ARM architectures.
+ *
+ * Returns: 32-bit register value
+ */
 static inline u32 i2c_a78_readl(struct i2c_a78_dev *i2c_dev, u32 offset)
 {
 	return readl_relaxed(i2c_dev->base + offset);
 }
 
+/**
+ * i2c_a78_writel - Write 32-bit value to register  
+ * @i2c_dev: I2C device structure
+ * @value: Value to write
+ * @offset: Register offset from base address
+ *
+ * Performs a relaxed 32-bit write to the I2C controller register space.
+ * Uses writel_relaxed() for better performance on ARM architectures.
+ */
 static inline void i2c_a78_writel(struct i2c_a78_dev *i2c_dev, u32 value, u32 offset)
 {
 	writel_relaxed(value, i2c_dev->base + offset);
